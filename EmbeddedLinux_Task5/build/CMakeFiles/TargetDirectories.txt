@@ -1,0 +1,6 @@
+/home/mohammed/Calculator/static/build/CMakeFiles/Calculator.dir
+/home/mohammed/Calculator/static/build/CMakeFiles/edit_cache.dir
+/home/mohammed/Calculator/static/build/CMakeFiles/rebuild_cache.dir
+/home/mohammed/Calculator/static/build/lib/CMakeFiles/Math.dir
+/home/mohammed/Calculator/static/build/lib/CMakeFiles/edit_cache.dir
+/home/mohammed/Calculator/static/build/lib/CMakeFiles/rebuild_cache.dir
