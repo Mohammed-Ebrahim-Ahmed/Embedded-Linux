@@ -1,0 +1,95 @@
+# Creating emulated SD card for the u-boot on ubuntu to be attached to Qeum
+
+> The total size of the created SD card is 1GB
+
+The task provided to create two partition:
+
+1. FAT partition of 200 mb
+2. EXT4 partition of 800 mb
+
+
+
+The name of the partitions are:
+
+1. The first partition for the boot 
+2. The second partition for rootfs
+
+
+
+![The partitions after creating two partition on the SD card](/home/mohammed/Pictures/Screenshots/Screenshot from 2024-01-08 17-59-22.png)
+
+> Note: this readme file has a lot of content from FadyKhalil content check it from the following link
+>
+> []: https://github.com/FadyKhalil/EmbeddedLinux/tree/main/3-Uboot	"u-boot SD configuration"
+
+## The following steps should be followed in ordor to achieve this:
+
+
+
+1. first you need to created an image devise and it filled with zeros
+
+```
+# Create a file with 1 GB filled with zeros
+dd if=/dev/zero of=sd.img bs=1M count=1024
+```
+
+2. you need to configure the partition table for the SD card
+
+```
+# for the VIRTUAL SD card
+cfdisk sd.img
+```
+
+| Partition Size | Partition Format | Bootable |
+| -------------- | ---------------- | -------- |
+| 200 MB         | FAT 16           | Yes      |
+| 800            | Linux            | No       |
+
+write to apply changes
+
+3. Loop driver for virtual usage only:
+
+to emulate the sd.img file as a sd card we need to attach it to loop driver to be as a block storage
+
+```
+4# attach the sd.img to be treated as block storage
+sudo losetup -f --show --partscan sd.img
+
+# Running the upper command will show you
+# Which loop device the sd.img is connected
+# take it and assign it like down bellow command
+
+# Assign the Block device as global variable to be treated as MACRO
+export DISK=/dev/loop<x>
+```
+
+4. Format Partition Table
+
+As pre-configured from cfdisk command first partition is FAT
+
+```
+# Formating the first partition as FAT
+sudo mkfs.vfat -F 16 -n boot ${DISK}p1
+```
+
+As pre-configured from cfdisk command second partition is linux
+
+```
+# format the created partition by ext4
+sudo mkfs.ext4 -L rootfs ${DISK}p2
+```
+
+5. Mount The Partition created 
+
+For the boot partition use this command
+
+```
+sudo mount -t vfat ${DISK}p1
+```
+
+For the rootfs partition use this command
+
+```
+sudo mount -t ext4 ${DISK}p2 <your desired directory>
+```
+
